@@ -2,7 +2,7 @@
 
 Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until after manual smoke test.
 
-> **Status:** 11 / 12 complete (Tasks 1–7, 9–12). Task 8 (manual smoke test) pending.
+> **Status:** 16 / 17 complete (Tasks 1–7, 9–17). Task 8 (manual smoke test) pending.
 > Commit convention: `Task N: <description>`.
 
 ## Decisions
@@ -75,3 +75,32 @@ Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until 
   - Templates: `people_list.html`, `people_create.html` extending base with the existing card / form patterns.
   - Empty-state handling: `who_am_i` and `chore_create` show a banner pointing to `/people/new/` when no people exist.
   - `chore_list.html`: add a small "People" link in the toolbar.
+
+- [x] **Task 13 — Chore deletion**
+  - `chore_delete` view (POST `/chore/<int:chore_id>/delete/`): single-click delete; redirects to `/` with success message via Django messages.
+  - `chores_delete_completed` view (POST `/chores/delete-completed/`): bulk-delete `Chore.objects.filter(last_done_at__isnull=False)`; success message shows count.
+  - URLs: `chore_delete`, `chores_delete_completed` in `chores/urls.py`.
+  - `chore_list.html`: per-row "Delete" button (paired with "Mark done" in an `.actions` flex container); toolbar gains "Delete N completed" button shown only when `completed_count > 0`.
+  - `base.html`: add `.btn.danger` (white bg, red text/border, hover red wash) and `.actions { display: flex; gap: 0.375rem; }`.
+
+- [x] **Task 14 — User deletion: CASCADE**
+  - `chores/models.py`: change `Chore.assigned_to` `on_delete=PROTECT` → `on_delete=CASCADE`.
+  - New migration via `makemigrations` (auto-named `0002_alter_chore_assigned_to.py`).
+  - `chores/views.py`: simplify `person_delete` — drop `ProtectedError` handling; success message becomes "Deleted {name} and all their chores."
+  - DB reset (`db.sqlite3`) + `migrate` to confirm clean state on the empty table.
+
+- [x] **Task 15 — View toggle (list vs board)**
+  - `chore_list` view: read `?view=` from query (accepts `"list"`/`"board"`), persist to `request.session["view"]`, default `"list"`. Pass `view` to context.
+  - `chore_list.html` toolbar: `[List] · [Board]` links with the active view in bold.
+  - `base.html`: `.toolbar a.active { font-weight: 600; color: var(--text); }`.
+
+- [x] **Task 16 — Kanban board template**
+  - New `chores/templates/chores/chore_list_board.html`: CSS Grid, one column per Person, with the person's chores stacked as compact cards. Empty columns render "No chores".
+  - Reuses `.chore-card` styling; each card shows title, optional recurrence, state pill, Mark done + Delete buttons.
+  - `chore_list` view: prefetch `Person.objects.prefetch_related("chores")`; pass `people` to context; pick template by `view` (`board` → `chore_list_board.html`, else `chore_list.html`).
+  - `base.html`: `.kanban`, `.column`, `.board-card` CSS — column width via inline `grid-template-columns: repeat({{ people|length }}, minmax(0, 1fr))`.
+
+- [x] **Task 17 — Color coding (DUE/DONE swap)**
+  - `base.html` CSS swap:
+    - `.chore .state` (DONE) → teal background `var(--accent)`, white text.
+    - `.chore .state.due` → amber background `#fef3c7`, amber text `#92400e`.
