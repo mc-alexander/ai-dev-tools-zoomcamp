@@ -2,7 +2,7 @@
 
 Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until after manual smoke test.
 
-> **Status:** 2 / 8 complete (Tasks 1, 2).
+> **Status:** 3 / 8 complete (Tasks 1, 2, 3).
 > Commit convention: `Task N: <description>`.
 
 ## Decisions
@@ -25,7 +25,7 @@ Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until 
     ```
   - Produces `chores/migrations/0001_initial.py`. `migrate` deferred to Task 3.
 
-- [ ] **Task 3 — Seed the 3 People via a data migration**
+- [x] **Task 3 — Seed the 3 People via a data migration**
   - Create a `RunPython` data migration (e.g. `chores/migrations/0002_seed_people.py`) that uses `Person.objects.get_or_create(name=...)` for `"mom"`, `"sister"`, `"me"`. Runs as part of the standard `uv run python manage.py migrate` step — no extra command needed by future contributors.
 
 - [ ] **Task 4 — Wire URLs**
