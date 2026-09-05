@@ -3,9 +3,15 @@
 A tiny Django app to coordinate chores between mom, sister, and me.
 
 ## Stack
-- Python + Django
+- Python 3.13
+- Django 6.1
 - SQLite (default)
 - HTML templates (Django)
+- uv (dependency management)
+
+## Project layout
+- `household/` — Django project (settings, urls, wsgi)
+- `chores/` — Django app (models, views, templates)
 
 ## Scope (in)
 - Chore list, each assigned to one of 3 people
@@ -20,4 +26,16 @@ A tiny Django app to coordinate chores between mom, sister, and me.
 - Comments or activity history
 
 ## Run
-(details to be added during implementation)
+Requires [uv](https://docs.astral.sh/uv/).
+
+```bash
+uv sync                  # install deps into .venv
+uv run python manage.py migrate
+uv run python manage.py runserver
+```
+
+Then open http://127.0.0.1:8000/
+
+## Status
+Scaffolding complete. Models, views, templates not yet implemented —
+see [_docs/plan.md](_docs/plan.md).
