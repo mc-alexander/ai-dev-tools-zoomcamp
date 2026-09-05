@@ -42,3 +42,22 @@ class Chore(models.Model):
         if self.interval_days is None:
             return False
         return self.last_done_at + timedelta(days=self.interval_days) <= timezone.now()
+
+    @property
+    def due_label(self) -> str:
+        if self.interval_days is None:
+            return ""
+        if self.last_done_at is None:
+            return "Due now"
+        seconds = (
+            self.last_done_at + timedelta(days=self.interval_days) - timezone.now()
+        ).total_seconds()
+        if seconds > 86400:
+            n = int(seconds / 86400)
+            return "Due tomorrow" if n == 1 else f"Due in {n} days"
+        if seconds > 0:
+            return "Due today"
+        if seconds >= -86400:
+            return "Due now"
+        n = int(-seconds / 86400)
+        return "1 day overdue" if n == 1 else f"{n} days overdue"

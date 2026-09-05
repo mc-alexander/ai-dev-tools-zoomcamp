@@ -48,8 +48,8 @@
                                                 {% if chore.last_done_at %}Done{% else %}Due{% endif %}
                                             </div>
                                         </div>
-                                        {% if chore.interval_days %}
-                                            <div class="meta">every {{ chore.interval_days }} day{{ chore.interval_days|pluralize }}</div>
+                                        {% if chore.due_label %}
+                                            <div class="meta">{{ chore.due_label }}</div>
                                         {% endif %}
                                         <div class="actions">
                                             <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
