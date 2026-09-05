@@ -1,0 +1,33 @@
+{% extends "chores/base.html" %}
+
+{% block title %}Add chore{% endblock %}
+
+{% block content %}
+    <h2>Add chore</h2>
+    <form method="post" class="stack">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="field">
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}<div class="errors">{{ form.title.errors }}</div>{% endif %}
+        </div>
+        <div class="field">
+            <label for="{{ form.assigned_to.id_for_label }}">Assigned to</label>
+            {{ form.assigned_to }}
+            {% if form.assigned_to.errors %}<div class="errors">{{ form.assigned_to.errors }}</div>{% endif %}
+        </div>
+        <div class="field">
+            <label for="{{ form.interval_days.id_for_label }}">Recurs every (days)</label>
+            {{ form.interval_days }}
+            <div class="help">Leave blank for a one-shot chore.</div>
+            {% if form.interval_days.errors %}<div class="errors">{{ form.interval_days.errors }}</div>{% endif %}
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn">Add chore</button>
+            <a href="{% url 'chores:index' %}" class="btn secondary">Cancel</a>
+        </div>
+    </form>
+{% endblock %}

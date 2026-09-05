@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from .forms import ChoreForm
 from .models import Chore, Person
 
 
@@ -54,3 +55,23 @@ def mark_done(request, chore_id):
     chore.last_done_at = timezone.now()
     chore.save(update_fields=["last_done_at"])
     return redirect(reverse("chores:index"))
+
+
+@require_http_methods(["GET", "POST"])
+def chore_create(request):
+    person_id = request.session.get("person_id")
+    if person_id is None:
+        return redirect(reverse("chores:who_am_i"))
+    current_person = Person.objects.get(pk=person_id)
+    if request.method == "POST":
+        form = ChoreForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("chores:index"))
+    else:
+        form = ChoreForm(initial={"assigned_to": current_person})
+    return render(
+        request,
+        "chores/chore_create.html",
+        {"form": form, "current_person": current_person},
+    )
