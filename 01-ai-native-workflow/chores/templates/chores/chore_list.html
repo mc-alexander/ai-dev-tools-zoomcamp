@@ -3,53 +3,43 @@
 {% block title %}Chores{% endblock %}
 
 {% block header_extra %}
-    <span class="muted">You are: <strong>{{ current_person.name }}</strong> &middot; <a href="{% url 'chores:who_am_i' %}">Switch</a></span>
+    <span class="muted">Hi, <strong>{{ current_person.name }}</strong></span>
 {% endblock %}
 
 {% block content %}
-    <p>
+    <div class="toolbar">
+        <a href="{% url 'chores:chore_create' %}">+ Add chore</a>
         {% if hide_done %}
             <a href="?hide_done=0">Show completed</a>
         {% else %}
             <a href="?hide_done=1">Hide completed</a>
         {% endif %}
-    </p>
+    </div>
 
     {% if chores %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Chore</th>
-                    <th>Assignee</th>
-                    <th>State</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for chore in chores %}
-                    <tr>
-                        <td>
+        <ul class="chore-list">
+            {% for chore in chores %}
+                <li class="chore {% if chore.last_done_at %}completed{% endif %}">
+                    <div>
+                        <div class="title">
                             {% if chore.last_done_at %}<s>{{ chore.title }}</s>{% else %}{{ chore.title }}{% endif %}
-                        </td>
-                        <td>{{ chore.assigned_to.name }}</td>
-                        <td>
-                            {% if chore.last_done_at %}
-                                Done
-                            {% else %}
-                                Due
-                            {% endif %}
-                        </td>
-                        <td>
-                            <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
-                                {% csrf_token %}
-                                <button type="submit">Mark done</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </div>
+                        <div class="meta">{{ chore.assigned_to.name }}</div>
+                    </div>
+                    <div class="state {% if not chore.last_done_at %}due{% endif %}">
+                        {% if chore.last_done_at %}Done{% else %}Due{% endif %}
+                    </div>
+                    <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn secondary">Mark done</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-        <p class="muted">No chores yet.</p>
+        <div class="empty">
+            <p>No chores to show.</p>
+            <a href="{% url 'chores:chore_create' %}" class="btn">+ Add your first chore</a>
+        </div>
     {% endif %}
 {% endblock %}

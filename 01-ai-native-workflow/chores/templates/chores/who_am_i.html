@@ -4,16 +4,18 @@
 
 {% block content %}
     <h2>Who are you?</h2>
-    <form method="post">
+    <form method="post" class="stack">
         {% csrf_token %}
-        <p>
+        <div class="radio-field">
             {% for person in people %}
                 <label>
                     <input type="radio" name="person_id" value="{{ person.id }}" required>
                     {{ person.name }}
-                </label><br>
+                </label>
             {% endfor %}
-        </p>
-        <button type="submit">Continue</button>
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn">Continue</button>
+        </div>
     </form>
 {% endblock %}
