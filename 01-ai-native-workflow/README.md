@@ -34,8 +34,6 @@ uv run python manage.py migrate
 uv run python manage.py runserver
 ```
 
-Then open http://127.0.0.1:8000/
-
 ## Status
 Scaffolding complete. Models, views, templates not yet implemented —
 see [_docs/plan.md](_docs/plan.md).
