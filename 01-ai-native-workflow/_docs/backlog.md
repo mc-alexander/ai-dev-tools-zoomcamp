@@ -2,7 +2,7 @@
 
 Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until after manual smoke test.
 
-> **Status:** 7 / 8 complete (Tasks 1, 2, 3, 4, 5, 6, 7).
+> **Status:** 9 / 10 complete (Tasks 1–7, 9, 10). Task 8 (manual smoke test) pending.
 > Commit convention: `Task N: <description>`.
 
 ## Decisions
@@ -47,3 +47,16 @@ Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until 
 
 - [ ] **Task 8 — Manual smoke test**
   - For each of the 3 people (use 3 browser profiles / private windows for session isolation): pick self at `/who-am-i`; mark a one-shot chore done (verify it becomes struck-through, and verify "Hide completed" hides it); mark a recurring chore done (verify it's struck-through but reappears after `interval_days` elapses — use Django admin or `manage.py shell` to back-date `last_done_at` to simulate).
+
+- [x] **Task 9 — In-app chore creation**
+  - `ChoreForm` (`chores/forms.py`): `ModelForm` with `title`, `assigned_to`, `interval_days`. Excludes `last_done_at` (auto-set by `mark_done`).
+  - `chore_create` view (GET/POST `/chore/new/`): requires session identity; on GET, pre-fills `assigned_to` with current person; on POST, validates and saves; redirects to `/`. Errors re-render the form with messages.
+  - URL: `path("chore/new/", views.chore_create, name="chore_create")` in `chores/urls.py`.
+  - Template `chores/templates/chores/chore_create.html`: extends base; vertical stacked form, teal submit, secondary cancel link back to `/`.
+  - `chore_list.html`: add "+ Add chore" link in the toolbar; empty state gains a primary CTA to the same URL.
+
+- [x] **Task 10 — Visual polish (minimalist redesign)**
+  - `base.html`: replace inline `<style>` with a teal (`#0d9488`) minimalist palette — light gray background, white surface cards with subtle border + 8px radius, system font stack, focus rings in teal.
+  - `chore_list.html`: card-based layout (`<ul class="chore-list">` of `<li class="chore">` cards) instead of `<table>`. Each card shows title (struck-through when completed), assignee, "DUE"/"DONE" state pill, inline `.btn.secondary` "Mark done" form.
+  - `who_am_i.html`: wrap radio list in `form.stack` with teal "Continue" button.
+  - `chore_create.html` (from Task 9): styled with `form.stack`.
