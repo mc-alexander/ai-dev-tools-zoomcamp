@@ -2,7 +2,7 @@
 
 Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until after manual smoke test.
 
-> **Status:** 9 / 10 complete (Tasks 1–7, 9, 10). Task 8 (manual smoke test) pending.
+> **Status:** 11 / 12 complete (Tasks 1–7, 9–12). Task 8 (manual smoke test) pending.
 > Commit convention: `Task N: <description>`.
 
 ## Decisions
@@ -60,3 +60,18 @@ Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until 
   - `chore_list.html`: card-based layout (`<ul class="chore-list">` of `<li class="chore">` cards) instead of `<table>`. Each card shows title (struck-through when completed), assignee, "DUE"/"DONE" state pill, inline `.btn.secondary` "Mark done" form.
   - `who_am_i.html`: wrap radio list in `form.stack` with teal "Continue" button.
   - `chore_create.html` (from Task 9): styled with `form.stack`.
+
+- [x] **Task 11 — Switch user ghost button**
+  - `base.html`: add `.header-extra { display: flex; gap: 0.75rem; align-items: center; }`.
+  - `chore_list.html`: wrap greeting and `Switch` `.btn.secondary` in `<div class="header-extra">`.
+
+- [x] **Task 12 — Person CRUD + drop the seed**
+  - Delete `chores/migrations/0002_seed_people.py` and `db.sqlite3`; re-run `migrate` (only `0001_initial` runs). New clones start with an empty `Person` table.
+  - `PersonForm` (in `chores/forms.py`): `ModelForm` for `Person.name` only.
+  - `people_list` view (GET `/people/`): list all people; per-row "Delete" POST form; "Add person" link; error banner when deletion fails due to `ProtectedError`.
+  - `people_create` view (GET/POST `/people/new/`): `PersonForm`; redirect to `/people/` on success.
+  - `person_delete` view (POST `/people/<int:person_id>/delete/`): catches `ProtectedError` (from `Chore.assigned_to on_delete=PROTECT`) and re-renders the list with an error message instead of a 500.
+  - URLs: `people_list`, `people_create`, `person_delete` in `chores/urls.py`.
+  - Templates: `people_list.html`, `people_create.html` extending base with the existing card / form patterns.
+  - Empty-state handling: `who_am_i` and `chore_create` show a banner pointing to `/people/new/` when no people exist.
+  - `chore_list.html`: add a small "People" link in the toolbar.
