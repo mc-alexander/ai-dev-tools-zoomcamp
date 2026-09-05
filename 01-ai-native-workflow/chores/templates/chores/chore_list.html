@@ -3,12 +3,18 @@
 {% block title %}Chores{% endblock %}
 
 {% block header_extra %}
-    <span class="muted">Hi, <strong>{{ current_person.name }}</strong></span>
+    <div class="header-extra">
+        <span class="muted">Hi, <strong>{{ current_person.name }}</strong></span>
+        <a href="{% url 'chores:who_am_i' %}" class="btn secondary">Switch</a>
+    </div>
 {% endblock %}
 
 {% block content %}
     <div class="toolbar">
-        <a href="{% url 'chores:chore_create' %}">+ Add chore</a>
+        <span>
+            <a href="{% url 'chores:chore_create' %}">+ Add chore</a>
+            · <a href="{% url 'chores:people_list' %}">People</a>
+        </span>
         {% if hide_done %}
             <a href="?hide_done=0">Show completed</a>
         {% else %}

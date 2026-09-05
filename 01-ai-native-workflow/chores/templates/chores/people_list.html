@@ -1,0 +1,31 @@
+{% extends "chores/base.html" %}
+
+{% block title %}People{% endblock %}
+
+{% block content %}
+    <div class="toolbar">
+        <a href="{% url 'chores:people_create' %}">+ Add person</a>
+    </div>
+
+    {% if people %}
+        <ul class="chore-list">
+            {% for person in people %}
+                <li class="chore">
+                    <div>
+                        <div class="title">{{ person.name }}</div>
+                        <div class="meta">{{ person.chores.count }} chore{{ person.chores.count|pluralize }}</div>
+                    </div>
+                    <form method="post" action="{% url 'chores:person_delete' person.id %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn secondary">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty">
+            <p>No people yet.</p>
+            <a href="{% url 'chores:people_create' %}" class="btn">+ Add your first person</a>
+        </div>
+    {% endif %}
+{% endblock %}

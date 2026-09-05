@@ -36,6 +36,7 @@
             gap: 1rem;
             flex-wrap: wrap;
         }
+        .header-extra { display: flex; gap: 0.75rem; align-items: center; }
         a { color: var(--accent); text-decoration: none; }
         a:hover { text-decoration: underline; }
 
@@ -152,6 +153,11 @@
             margin-bottom: 1rem;
             font-size: 0.875rem;
         }
+
+        .messages { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .message { padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; }
+        .message.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
     </style>
 </head>
 <body>
@@ -159,6 +165,13 @@
         <h1><a href="{% url 'chores:index' %}">Chores</a></h1>
         {% block header_extra %}{% endblock %}
     </div>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="message {{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     {% block content %}{% endblock %}
 </body>
 </html>
