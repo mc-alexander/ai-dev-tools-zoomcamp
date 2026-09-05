@@ -2,7 +2,7 @@
 
 Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until after manual smoke test.
 
-> **Status:** 6 / 8 complete (Tasks 1, 2, 3, 4, 5, 6).
+> **Status:** 7 / 8 complete (Tasks 1, 2, 3, 4, 5, 6, 7).
 > Commit convention: `Task N: <description>`.
 
 ## Decisions
@@ -42,7 +42,7 @@ Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until 
   - `chore_list.html` — title, assignee, due-state, "Mark done" button per row; completed rows rendered `<s>…</s>`; toggle link "Hide completed" / "Show completed" in the header. `{% csrf_token %}` on each POST form.
   - `who_am_i.html` — radio buttons for the 3 People + submit.
 
-- [ ] **Task 7 — Register admin** (`chores/admin.py`)
+- [x] **Task 7 — Register admin** (`chores/admin.py`)
   - Register `Person` and `Chore` so they can be created/edited at `/admin/`.
 
 - [ ] **Task 8 — Manual smoke test**
