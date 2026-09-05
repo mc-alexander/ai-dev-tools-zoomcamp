@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.db import models
+from django.utils import timezone
 
 
 class Person(models.Model):
@@ -31,3 +34,11 @@ class Chore(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    @property
+    def is_due(self) -> bool:
+        if self.last_done_at is None:
+            return True
+        if self.interval_days is None:
+            return False
+        return self.last_done_at + timedelta(days=self.interval_days) <= timezone.now()
