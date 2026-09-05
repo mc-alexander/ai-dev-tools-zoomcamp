@@ -1,18 +1,21 @@
 # AGENTS.md
 
-Repo for the Datatalks "AI Dev Tools" zoomcamp. Single Django module, no monorepo tooling / CI / lint / formatter beyond Django defaults. Tests run via Django's built-in test runner.
+Repo for the DataTalks "AI Dev Tools" zoomcamp. Multi-module homework collection, currently with one Django module populated (Module 1). No monorepo tooling / CI / lint / formatter beyond Django defaults. Tests run via Django's built-in test runner.
 
 ## Layout
 
-- `01-ai-native-workflow/` — the only project. A Django chores app, managed with `uv`.
+This repo follows a per-module convention: each module lives in its own numbered directory with its own README. Only Module 1 is populated today; modules 2–5 are pending.
+
+- `README.md` (root) — navigation index listing all modules and their status. Not a project document.
+- `01-ai-native-workflow/` — Module 1: a Django chores app, managed with `uv`.
   - `household/` — Django project (`settings.py`, `urls.py`, `wsgi.py`, `asgi.py`).
   - `chores/` — Django app (`models.py`, `views.py`, `forms.py`, `admin.py`, `tests.py`, `migrations/`, `templates/`).
   - `_docs/plan.md` — original design brainstorm. Largely historical.
   - `_docs/backlog.md` — implementation backlog with status checkboxes.
   - `manage.py`, `pyproject.toml`, `uv.lock`, `db.sqlite3` (gitignored), `.venv/` (gitignored).
-- Root `README.md` is just a title; the real README is `01-ai-native-workflow/README.md`.
+- `AGENTS.md` (this file) — repo-level instructions for OpenCode sessions. Module-1-centric today; future modules should add equivalent notes as they're built.
 
-All `uv`/`python manage.py ...` commands must be run from `01-ai-native-workflow/`.
+All `uv`/`python manage.py ...` commands must be run from the module directory they belong to.
 
 ## Stack (exact versions)
 
