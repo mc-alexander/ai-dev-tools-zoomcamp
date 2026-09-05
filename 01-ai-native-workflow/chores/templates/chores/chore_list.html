@@ -1,0 +1,55 @@
+{% extends "chores/base.html" %}
+
+{% block title %}Chores{% endblock %}
+
+{% block header_extra %}
+    <span class="muted">You are: <strong>{{ current_person.name }}</strong> &middot; <a href="{% url 'chores:who_am_i' %}">Switch</a></span>
+{% endblock %}
+
+{% block content %}
+    <p>
+        {% if hide_done %}
+            <a href="?hide_done=0">Show completed</a>
+        {% else %}
+            <a href="?hide_done=1">Hide completed</a>
+        {% endif %}
+    </p>
+
+    {% if chores %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Chore</th>
+                    <th>Assignee</th>
+                    <th>State</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chore in chores %}
+                    <tr>
+                        <td>
+                            {% if chore.last_done_at %}<s>{{ chore.title }}</s>{% else %}{{ chore.title }}{% endif %}
+                        </td>
+                        <td>{{ chore.assigned_to.name }}</td>
+                        <td>
+                            {% if chore.last_done_at %}
+                                Done
+                            {% else %}
+                                Due
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit">Mark done</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">No chores yet.</p>
+    {% endif %}
+{% endblock %}

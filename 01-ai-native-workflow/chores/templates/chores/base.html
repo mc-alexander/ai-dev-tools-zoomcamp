@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Household Chores{% endblock %}</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; color: #222; }
+        h1 { margin: 0; font-size: 1.25rem; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #eee; vertical-align: middle; }
+        th { font-weight: 600; color: #555; }
+        button { padding: 0.25rem 0.75rem; cursor: pointer; }
+        .muted { color: #888; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; }
+        .header h1 a { text-decoration: none; color: inherit; }
+        form.inline { display: inline; margin: 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><a href="{% url 'chores:index' %}">Chores</a></h1>
+        {% block header_extra %}{% endblock %}
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>
