@@ -1,24 +1,19 @@
 # Shared Household Chores
 
-A tiny Django app for a family to coordinate chores. Mark chores done, see what's due per person, manage people in-app. No accounts — pick who you are on first visit, remembered via session.
+A small Django app for a family to coordinate chores. Pick who you are once, remembered via session — no accounts.
 
 ## Stack
 - Python 3.13
 - Django 6.1
-- SQLite (default)
-- HTML templates (Django, no JS framework)
+- SQLite
 - uv (dependency management)
 
 ## Features
 - Chore list with assignee (any number of people)
-- "Mark done" button; no history beyond `last_done_at`
-- Recurring chores: auto-reset N days after completion (e.g. every 3 days, weekly)
-- One-shot chores: stay done forever after first completion
-- View modes: list (cards) or kanban board (one column per person)
-- Per-chore "Delete" + bulk "Delete completed"
-- In-app Person CRUD (add / remove people freely)
-- "Hide completed" toggle, session-stored
-- Identity picker (`/who-am-i/`) with a "Switch" button in the header
+- "Mark done" button; one-shots stay done forever, recurring chores auto-reset N days after completion
+- List and kanban board views (one column per person)
+- In-app Person CRUD
+- Session-stored identity, view mode, and hide-completed preferences
 
 ## Project layout
 - `household/` — Django project (settings, urls, wsgi)
@@ -43,17 +38,19 @@ uv run python manage.py test chores    # 33 tests, ~0.1s
 
 ## First-time flow
 
-1. Run `uv run python manage.py runserver` and open the URL it prints — you'll be redirected to `/who-am-i/`.
-2. No people yet → redirected to `/people/new/` — add your first person.
-3. Add more people via `/people/`.
-4. Pick yourself at `/who-am-i/` → land on the chore list.
-5. Use `+ Add chore` to create your first chore (assignee defaults to you).
-6. Toggle view via `[List] · [Board]` in the toolbar.
+1. Run the server, open the URL it prints → redirected to `/who-am-i/`.
+2. No people yet → add your first via `/people/new/`, then pick yourself.
+3. Create chores with `+ Add chore`; toggle `[List] · [Board]` for kanban view.
 
-## Scope (out)
+## Decisions and trade-offs
 
-Accounts / auth, points / leaderboards, notifications, comments, activity history, multi-tenant, mobile app. See `_docs/plan.md` §"Cut".
+- **No seed data for people.** The original plan called for 3 fixed rows (mom/sister/me). Dropped the seed during the build in favor of in-app Person CRUD, so the app is empty on first run and any number of people can be added.
+- **`on_delete=CASCADE` for `Chore.assigned_to`.** The original plan called for `PROTECT`. With in-app Person CRUD, deleting a user with active chores was a real UX problem, so we switched to `CASCADE` — deleting a person wipes their chores. Trade-off: chore history can be lost.
+- **Session-stored view and hide-done preferences** instead of URL-only. Sticky across navigation, bookmark-friendly via `?view=board` / `?hide_done=1`.
+- **Inline `<style>` in `base.html`** instead of separate CSS files. Single template, zero build step.
+- **Manual time control in tests** (`timezone.now() - timedelta(...)`) instead of `freezegun`. Avoids a dep.
+- **No auth.** Per the original plan's "Cut" list. Session-based identity only.
 
 ## Status
 
-Feature-complete MVP. All 17 backlog tasks landed plus post-backlog polish (recurring due labels, board view, in-app Person CRUD, test coverage). See `_docs/backlog.md` for the task history.
+Feature-complete MVP. All 17 backlog tasks + post-backlog polish landed (33 tests). See `_docs/backlog.md` for the task history.
