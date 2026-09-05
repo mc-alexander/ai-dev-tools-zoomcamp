@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.db.models import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -105,12 +104,7 @@ def people_create(request):
 @require_POST
 def person_delete(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
-    try:
-        person.delete()
-        messages.success(request, f"Deleted {person.name}.")
-    except ProtectedError:
-        messages.error(
-            request,
-            f"Can't delete {person.name} — they have chores assigned. Reassign or delete those chores first.",
-        )
+    name = person.name
+    person.delete()
+    messages.success(request, f"Deleted {name} and all their chores.")
     return redirect(reverse("chores:people_list"))

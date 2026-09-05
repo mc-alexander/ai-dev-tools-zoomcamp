@@ -19,7 +19,7 @@ class Chore(models.Model):
     title = models.CharField(max_length=200)
     assigned_to = models.ForeignKey(
         Person,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name="chores",
     )
     interval_days = models.PositiveIntegerField(
