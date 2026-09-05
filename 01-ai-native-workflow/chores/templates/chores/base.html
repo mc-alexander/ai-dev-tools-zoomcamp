@@ -161,6 +161,45 @@
             margin-bottom: 1rem;
             font-size: 0.875rem;
         }
+        .toolbar a.active { font-weight: 600; color: var(--text); }
+
+        .kanban { display: grid; gap: 1rem; }
+        .column {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.875rem;
+            min-width: 0;
+        }
+        .column h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .board-cards { display: flex; flex-direction: column; gap: 0.5rem; }
+        .board-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.625rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .board-card.completed { opacity: 0.65; }
+        .board-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        .board-card .title { font-weight: 500; font-size: 0.875rem; }
+        .board-card .title s { color: var(--muted); }
+        .board-card .meta { font-size: 0.75rem; color: var(--muted); }
+        .board-empty { font-size: 0.8125rem; margin: 0; }
 
         .messages { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .message { padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; }

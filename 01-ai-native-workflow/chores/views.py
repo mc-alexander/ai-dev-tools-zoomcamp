@@ -13,6 +13,11 @@ def chore_list(request):
     if request.session.get("person_id") is None:
         return redirect(reverse("chores:who_am_i"))
 
+    view_param = request.GET.get("view")
+    if view_param in ("list", "board"):
+        request.session["view"] = view_param
+    view = request.session.get("view", "list")
+
     hide_done_param = request.GET.get("hide_done")
     if hide_done_param in ("0", "1"):
         request.session["hide_done"] = hide_done_param == "1"
@@ -26,16 +31,28 @@ def chore_list(request):
     if hide_done:
         chores = chores.filter(last_done_at__isnull=True)
 
+    people = (
+        Person.objects
+        .prefetch_related("chores")
+        .order_by("name")
+    )
+
     completed_count = Chore.objects.filter(last_done_at__isnull=False).count()
 
     current_person = Person.objects.get(pk=request.session["person_id"])
+    template_name = (
+        "chores/chore_list_board.html" if view == "board"
+        else "chores/chore_list.html"
+    )
     return render(
         request,
-        "chores/chore_list.html",
+        template_name,
         {
             "chores": chores,
+            "people": people,
             "current_person": current_person,
             "hide_done": hide_done,
+            "view": view,
             "completed_count": completed_count,
         },
     )

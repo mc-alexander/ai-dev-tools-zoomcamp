@@ -16,7 +16,9 @@
             · <a href="{% url 'chores:people_list' %}">People</a>
         </span>
         <span>
-            {% if hide_done %}<a href="?hide_done=0">Show completed</a>{% else %}<a href="?hide_done=1">Hide completed</a>{% endif %}
+            <a href="?view=list" class="{% if view == 'list' %}active{% endif %}">List</a>
+            · <a href="?view=board" class="{% if view == 'board' %}active{% endif %}">Board</a>
+            · {% if hide_done %}<a href="?hide_done=0">Show completed</a>{% else %}<a href="?hide_done=1">Hide completed</a>{% endif %}
         </span>
     </div>
 

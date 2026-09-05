@@ -1,0 +1,80 @@
+{% extends "chores/base.html" %}
+
+{% block title %}Chores{% endblock %}
+
+{% block header_extra %}
+    <div class="header-extra">
+        <span class="muted">Hi, <strong>{{ current_person.name }}</strong></span>
+        <a href="{% url 'chores:who_am_i' %}" class="btn secondary">Switch</a>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="toolbar">
+        <span>
+            <a href="{% url 'chores:chore_create' %}">+ Add chore</a>
+            · <a href="{% url 'chores:people_list' %}">People</a>
+        </span>
+        <span>
+            <a href="?view=list" class="{% if view == 'list' %}active{% endif %}">List</a>
+            · <a href="?view=board" class="{% if view == 'board' %}active{% endif %}">Board</a>
+        </span>
+    </div>
+
+    {% if completed_count %}
+        <div class="toolbar">
+            <form method="post" action="{% url 'chores:chores_delete_completed' %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn danger">Delete {{ completed_count }} completed</button>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if people %}
+        <div class="kanban" style="grid-template-columns: repeat({{ people|length }}, minmax(0, 1fr));">
+            {% for person in people %}
+                <div class="column">
+                    <h3>{{ person.name }}</h3>
+                    {% with person_chores=person.chores.all %}
+                        {% if person_chores %}
+                            <div class="board-cards">
+                                {% for chore in person_chores %}
+                                    <div class="board-card {% if chore.last_done_at %}completed{% endif %}">
+                                        <div class="board-card-header">
+                                            <div class="title">
+                                                {% if chore.last_done_at %}<s>{{ chore.title }}</s>{% else %}{{ chore.title }}{% endif %}
+                                            </div>
+                                            <div class="state {% if not chore.last_done_at %}due{% endif %}">
+                                                {% if chore.last_done_at %}Done{% else %}Due{% endif %}
+                                            </div>
+                                        </div>
+                                        {% if chore.interval_days %}
+                                            <div class="meta">every {{ chore.interval_days }} day{{ chore.interval_days|pluralize }}</div>
+                                        {% endif %}
+                                        <div class="actions">
+                                            <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn secondary">Mark done</button>
+                                            </form>
+                                            <form method="post" action="{% url 'chores:chore_delete' chore.id %}" class="inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="muted board-empty">No chores.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <p>No people yet.</p>
+            <a href="{% url 'chores:people_create' %}" class="btn">+ Add your first person</a>
+        </div>
+    {% endif %}
+{% endblock %}
