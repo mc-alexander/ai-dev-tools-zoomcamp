@@ -15,12 +15,19 @@
             <a href="{% url 'chores:chore_create' %}">+ Add chore</a>
             · <a href="{% url 'chores:people_list' %}">People</a>
         </span>
-        {% if hide_done %}
-            <a href="?hide_done=0">Show completed</a>
-        {% else %}
-            <a href="?hide_done=1">Hide completed</a>
-        {% endif %}
+        <span>
+            {% if hide_done %}<a href="?hide_done=0">Show completed</a>{% else %}<a href="?hide_done=1">Hide completed</a>{% endif %}
+        </span>
     </div>
+
+    {% if completed_count %}
+        <div class="toolbar">
+            <form method="post" action="{% url 'chores:chores_delete_completed' %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="btn danger">Delete {{ completed_count }} completed</button>
+            </form>
+        </div>
+    {% endif %}
 
     {% if chores %}
         <ul class="chore-list">
@@ -35,10 +42,16 @@
                     <div class="state {% if not chore.last_done_at %}due{% endif %}">
                         {% if chore.last_done_at %}Done{% else %}Due{% endif %}
                     </div>
-                    <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn secondary">Mark done</button>
-                    </form>
+                    <div class="actions">
+                        <form method="post" action="{% url 'chores:mark_done' chore.id %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn secondary">Mark done</button>
+                        </form>
+                        <form method="post" action="{% url 'chores:chore_delete' chore.id %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn danger">Delete</button>
+                        </form>
+                    </div>
                 </li>
             {% endfor %}
         </ul>

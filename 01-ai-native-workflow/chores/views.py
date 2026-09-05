@@ -26,11 +26,18 @@ def chore_list(request):
     if hide_done:
         chores = chores.filter(last_done_at__isnull=True)
 
+    completed_count = Chore.objects.filter(last_done_at__isnull=False).count()
+
     current_person = Person.objects.get(pk=request.session["person_id"])
     return render(
         request,
         "chores/chore_list.html",
-        {"chores": chores, "current_person": current_person, "hide_done": hide_done},
+        {
+            "chores": chores,
+            "current_person": current_person,
+            "hide_done": hide_done,
+            "completed_count": completed_count,
+        },
     )
 
 
@@ -57,6 +64,25 @@ def mark_done(request, chore_id):
     chore = get_object_or_404(Chore, pk=chore_id)
     chore.last_done_at = timezone.now()
     chore.save(update_fields=["last_done_at"])
+    return redirect(reverse("chores:index"))
+
+
+@require_POST
+def chore_delete(request, chore_id):
+    chore = get_object_or_404(Chore, pk=chore_id)
+    title = chore.title
+    chore.delete()
+    messages.success(request, f"Deleted chore '{title}'.")
+    return redirect(reverse("chores:index"))
+
+
+@require_POST
+def chores_delete_completed(request):
+    deleted_count, _ = Chore.objects.filter(last_done_at__isnull=False).delete()
+    if deleted_count:
+        messages.success(request, f"Deleted {deleted_count} completed chore{'s' if deleted_count != 1 else ''}.")
+    else:
+        messages.info(request, "No completed chores to delete.")
     return redirect(reverse("chores:index"))
 
 
