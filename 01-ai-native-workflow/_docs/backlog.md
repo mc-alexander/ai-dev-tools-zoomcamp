@@ -2,7 +2,7 @@
 
 Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until after manual smoke test.
 
-> **Status:** 3 / 8 complete (Tasks 1, 2, 3).
+> **Status:** 5 / 8 complete (Tasks 1, 2, 3, 4, 5).
 > Commit convention: `Task N: <description>`.
 
 ## Decisions
@@ -28,11 +28,11 @@ Source: `_docs/plan.md`. One task = one commit-sized unit. Tests deferred until 
 - [x] **Task 3 — Seed the 3 People via a data migration**
   - Create a `RunPython` data migration (e.g. `chores/migrations/0002_seed_people.py`) that uses `Person.objects.get_or_create(name=...)` for `"mom"`, `"sister"`, `"me"`. Runs as part of the standard `uv run python manage.py migrate` step — no extra command needed by future contributors.
 
-- [ ] **Task 4 — Wire URLs**
+- [x] **Task 4 — Wire URLs**
   - New `chores/urls.py` with `/`, `/who-am-i`, `/chore/<int:chore_id>/done`.
   - `household/urls.py`: add `path("", include("chores.urls"))`.
 
-- [ ] **Task 5 — Implement views** (`chores/views.py`)
+- [x] **Task 5 — Implement views** (`chores/views.py`)
   - `chore_list` (GET `/`) — list chores with due-state (`last_done_at IS NULL OR last_done_at + interval_days <= now()`); render "Mark done" form per chore. If session has no `person_id` → redirect `/who-am-i`. Honor `?hide_done=1` / `?hide_done=0` toggle (session-stored).
   - `who_am_i` (GET `/who-am-i`, POST sets session) — render 3 People; POST stores `person_id`, redirects `/`.
   - `mark_done` (POST `/chore/<int:chore_id>/done`) — sets `last_done_at = now()`, redirects `/`.
