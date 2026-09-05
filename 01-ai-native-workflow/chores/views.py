@@ -39,7 +39,11 @@ def chore_list(request):
 
     completed_count = Chore.objects.filter(last_done_at__isnull=False).count()
 
-    current_person = Person.objects.get(pk=request.session["person_id"])
+    current_person = Person.objects.filter(pk=request.session["person_id"]).first()
+    if current_person is None:
+        request.session.pop("person_id", None)
+        return redirect(reverse("chores:who_am_i"))
+
     template_name = (
         "chores/chore_list_board.html" if view == "board"
         else "chores/chore_list.html"
@@ -110,7 +114,10 @@ def chore_create(request):
         return redirect(reverse("chores:who_am_i"))
     if not Person.objects.exists():
         return redirect(reverse("chores:people_create"))
-    current_person = Person.objects.get(pk=person_id)
+    current_person = Person.objects.filter(pk=person_id).first()
+    if current_person is None:
+        request.session.pop("person_id", None)
+        return redirect(reverse("chores:who_am_i"))
     if request.method == "POST":
         form = ChoreForm(request.POST)
         if form.is_valid():
