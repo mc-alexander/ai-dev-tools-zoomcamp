@@ -1,0 +1,11 @@
+from django.urls import path
+
+from . import views
+
+app_name = "chores"
+
+urlpatterns = [
+    path("", views.chore_list, name="index"),
+    path("who-am-i/", views.who_am_i, name="who_am_i"),
+    path("chore/<int:chore_id>/done/", views.mark_done, name="mark_done"),
+]
